@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Adicionar Obra{% endblock %}
+{% block header_title %}Cadastro de Obra{% endblock %}
+{% block header_subtitle %}Preencha os dados para criar uma nova obra.{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="form-container">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.nome.label(text="Nome da Obra") }}
+                {{ form.nome(class="form-control", placeholder="Ex: Construção da Escola Modelo") }}
+            </div>
+            <div class="form-group">
+                {{ form.objeto.label(text="Objeto da Obra") }}
+                {{ form.objeto(class="form-control", placeholder="Descreva o objetivo principal da obra") }}
+            </div>
+            <div class="form-group">
+                {{ form.municipio.label(text="Município") }}
+                {{ form.municipio(class="form-control", placeholder="Ex: São Paulo") }}
+            </div>
+            <div class="form-group">
+                {{ form.orcamento_previsto.label(text="Orçamento Previsto (R$)") }}
+                {{ form.orcamento_previsto(class="form-control", placeholder="Ex: 250000.00") }}
+            </div>
+            <div class="form-group">
+                {{ form.secretaria_id.label(text="Secretaria Responsável") }}
+                {{ form.secretaria_id(class="form-control") }}
+            </div>
+            
+            <hr style="margin: 2rem 0; border: 1px solid var(--border-color);">
+
+            <div class="form-group">
+                {{ form.n_contrato.label(text="Nº do Contrato (Opcional)") }}
+                {{ form.n_contrato(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.ordem_servico.label(text="Ordem de Serviço (Opcional)") }}
+                {{ form.ordem_servico(class="form-control") }}
+            </div>
+            
+            <div class="form-group">
+                {{ form.submit(class="btn") }}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}{# Não precisa de scripts específicos aqui #}{% endblock %}
