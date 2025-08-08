@@ -9,10 +9,13 @@ from flask import Flask
 from models import db, Secretaria, Obra, Gasto
 from datetime import datetime
 from io import BytesIO
+import os
+from dotenv import load_dotenv
 
 # Configure o logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
-
+# Carrega as variáveis do ficheiro .env para o ambiente
+load_dotenv()
 # --- Configuração do App e DB ---
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///gerenciamento.db'
@@ -23,7 +26,7 @@ db.init_app(app)
 # Use o token que você recebeu do BotFather
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 # URL onde sua Web App do painel estará rodando (pode ser localhost com ngrok para testes)
-WEB_APP_URL = "https://7d057d72485d.ngrok-free.app" 
+WEB_APP_URL = "https://fd136a2eab71.ngrok-free.app" 
 
 # --- Estados para as Conversas ---
 # Conversa de Secretaria
