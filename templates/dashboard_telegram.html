@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Principal{% endblock %}
+{% block header_title %}Dashboard Financeiro{% endblock %}
+{% block header_subtitle %}Acompanhamento de orçamentos e gastos.{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    {% for secretaria in secretarias %}
+    <div class="card">
+        <div class="card-header">
+            <svg class="card-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h6.375a.75.75 0 01.75.75v1.5a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v-1.5A.75.75 0 019 6.75zM9 12.75h6.375a.75.75 0 01.75.75v1.5a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v-1.5a.75.75 0 01.75-.75z" /></svg>
+            <h2>{{ secretaria.nome }}</h2>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="chart-secretaria-{{ secretaria.id }}" data-id="{{ secretaria.id }}"></canvas>
+        </div>
+        <div class="info">
+            <p><strong>Orçamento Consolidado:</strong> <span class="text-accent">{{ secretaria.orcamento_consolidado | currency }}</span></p>
+            <p><strong>Total Gasto:</strong> <span class="text-gasto">{{ secretaria.orcamento_gasto | currency }}</span></p>
+            <p><strong>Saldo Geral:</strong> <span class="{% if secretaria.orcamento_restante >= 0 %}text-disponivel{% else %}text-prejuizo{% endif %}">{{ secretaria.orcamento_restante | currency }}</span></p>
+        </div>
+        
+        <div class="current-measurement-info" style="border-top: none; padding-top: 0; margin-top: 1rem;">
+             <div class="percentage-bar-container">
+                <div class="percentage-bar {% if secretaria.orcamento_restante >= 0 %}profit{% else %}loss{% endif %}"
+                     style="width: {{ [100, (secretaria.orcamento_gasto / secretaria.orcamento_consolidado * 100)|abs]|min if secretaria.orcamento_consolidado > 0 else 0 }}%;">
+                </div>
+            </div>
+            <div class="percentage-label {% if secretaria.orcamento_restante >= 0 %}text-disponivel{% else %}text-prejuizo{% endif %}">
+                {% if secretaria.orcamento_restante >= 0 %}
+                    <span>Lucro Geral de {{ "%.1f"|format(secretaria.resultado_consolidado_percentual) }}% ({{ secretaria.orcamento_restante | currency }})</span>
+                {% else %}
+                    <span>Prejuízo Geral de {{ "%.1f"|format(secretaria.resultado_consolidado_percentual|abs) }}% ({{ (secretaria.orcamento_restante * -1) | currency }})</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+        <div class="chart-container-diario">
+            <h3 class="chart-title">Fluxo de Caixa por Período (Gastos x Saldo)</h3>
+            <canvas id="chart-diario-{{ secretaria.id }}" data-id="{{ secretaria.id }}"></canvas>
+        </div>
+        
+        <div class="card-footer">
+            <div class="chart-legend-container" id="legend-{{ secretaria.id }}"></div>
+
+            <div class="card-action-button">
+                <a href="{{ url_for('detalhes_secretaria', secretaria_id=secretaria.id) }}" class="btn">
+                    Gerir Secretaria e Obras
+                </a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="card">
+        <h2>Bem-vindo!</h2>
+        <p>Nenhuma secretaria foi encontrada. Cadastre a primeira através do bot com o comando <code>/add_secretaria</code>.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

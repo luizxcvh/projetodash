@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Detalhes da Medição{% endblock %}
+{% block header_title %}Simulação de Orçamento{% endblock %}
+{% block header_subtitle %}Medição: {{ medicao.nome }}{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="content-header">
+        <div>
+            <h1>Orçamentos das Obras</h1>
+            <p class="text-secondary">Defina os valores e selecione a fonte para cada obra neste período.</p>
+        </div>
+        <div>
+            <strong>Orçamento Total da Medição:</strong>
+            <h2 class="text-disponivel">{{ medicao.orcamento_total | currency }}</h2>
+        </div>
+    </div>
+    
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Obra</th>
+                        <th>OS Inicial (Secretaria)</th>
+                        <th>OS QUALITECH</th>
+                        <th>Fonte do Orçamento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {# Iteramos sobre os sub-formulários de obras #}
+                    {% for obra_form in form.obras %}
+                    <tr>
+                        <td>
+                            <strong>{{ obra_form.nome.data }}</strong>
+                            {{ obra_form.obra_id }} {# Campo escondido com o ID da obra #}
+                        </td>
+                        <td>{{ obra_form.os_inicial_secretaria(class="form-control") }}</td>
+                        <td>{{ obra_form.os_qualitech(class="form-control") }}</td>
+                        <td>{{ obra_form.fonte_orcamento_selecionada(class="form-control-radio") }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="form-group" style="margin-top: 2rem; text-align: right;">
+            {{ form.submit(class="btn") }}
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{# Não definimos o bloco de scripts aqui para que ele herde corretamente do base.html #}

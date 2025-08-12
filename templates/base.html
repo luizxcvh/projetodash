@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Gerenciamento de Obras{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme');
+            const root = document.documentElement;
+            if (theme === 'dark') {
+                root.classList.add('dark-mode');
+            } else if (theme === 'light') {
+                root.classList.remove('dark-mode');
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                root.classList.add('dark-mode');
+            }
+        })();
+    </script>
+</head>
+<body class="light-mode">
+    <header class="dashboard-header">
+        <h1>{% block header_title %}Dashboard Financeiro{% endblock %}</h1>
+        <p>{% block header_subtitle %}Acompanhamento de orçamentos e gastos.{% endblock %}</p>
+
+        <div class="theme-switch-wrapper">
+            <label class="theme-switch" for="theme-toggle">
+                <input type="checkbox" id="theme-toggle" />
+                <span class="slider round"></span>
+            </label>
+        </div>
+    </header>
+
+    <nav class="app-nav">
+        <a href="{{ url_for('index') }}" class="{% if active_page == 'painel' %}active{% endif %}">Painel</a>
+        <a href="{{ url_for('listar_secretarias') }}" class="{% if active_page == 'secretarias' %}active{% endif %}">Secretarias</a>
+        <a href="{{ url_for('listar_obras') }}" class="{% if active_page == 'obras' %}active{% endif %}">Obras</a>
+    </nav>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block scripts %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% endblock %}
+</body>
+</html>

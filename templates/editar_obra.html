@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Obra{% endblock %}
+{% block header_title %}Editando: {{ form.nome.data }}{% endblock %}
+{% block header_subtitle %}Altere os dados da obra abaixo.{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="form-container">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.nome.label(text="Nome da Obra") }}
+                {{ form.nome(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.objeto.label(text="Objeto da Obra") }}
+                {{ form.objeto(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.municipio.label(text="Município") }}
+                {{ form.municipio(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.secretaria_id.label(text="Secretaria Responsável") }}
+                {{ form.secretaria_id(class="form-control") }}
+            </div>
+            
+            <hr style="margin: 2rem 0; border: 1px solid var(--border-color);">
+
+            <div class="form-group">
+                {{ form.n_contrato.label(text="Nº do Contrato (Opcional)") }}
+                {{ form.n_contrato(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.ordem_servico.label(text="Ordem de Serviço (Opcional)") }}
+                {{ form.ordem_servico(class="form-control") }}
+            </div>
+            
+            <div class="form-group">
+                <button type="submit" class="btn">Salvar Alterações</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}{# Não precisa de scripts específicos aqui #}{% endblock %}

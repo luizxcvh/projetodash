@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Medição{% endblock %}
+{% block header_title %}Editando Medição{% endblock %}
+{% block header_subtitle %}{{ form.nome.data }}{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="form-container">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.nome.label(text="Nome/Referência da Medição") }}
+                {{ form.nome(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.data_inicio.label(text="Data de Início") }}
+                {{ form.data_inicio(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.data_fim.label(text="Data de Fim") }}
+                {{ form.data_fim(class="form-control") }}
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn">Salvar Alterações</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{# Não definimos o bloco de scripts aqui para que ele herde corretamente do base.html #}

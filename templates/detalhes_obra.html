@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Detalhes da Obra{% endblock %}
+{% block header_title %}{{ obra.nome }}{% endblock %}
+{% block header_subtitle %}Painel de gestão e acompanhamento financeiro da obra.{% endblock %}
+
+{% block content %}
+<div class="details-grid">
+    <div class="content-container">
+       </div>
+
+    <div class="content-container">
+        <div class="content-header">
+            <h1>Gestão Financeira</h1>
+        </div>
+
+        <div class="finance-summary">
+            <p><strong>Total Gasto na Obra:</strong> <span class="text-gasto">{{ obra.total_gasto | currency }}</span></p>
+            <p><strong>Saldo Geral da Secretaria:</strong> 
+                {% if obra.secretaria.orcamento_restante >= 0 %}
+                    <span class="text-disponivel">{{ obra.secretaria.orcamento_restante | currency }}</span>
+                {% else %}
+                    <span class="text-prejuizo">{{ (obra.secretaria.orcamento_restante * -1) | currency }} (Déficit)</span>
+                {% endif %}
+            </p>
+        </div>
+
+        <hr style="margin: 2rem 0;">
+
+        <h4>Adicionar Novo Gasto</h4>
+        <div class="form-container" style="padding:0; box-shadow:none; border:none; margin-top:1rem;">
+             <form method="POST" action="{{ url_for('adicionar_gasto', obra_id=obra.id) }}">
+                {{ form_gasto.hidden_tag() }}
+                <div class="form-group">
+                    {{ form_gasto.descricao.label(text="Descrição do Gasto") }}
+                    {{ form_gasto.descricao(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form_gasto.valor.label(text="Valor (R$)") }}
+                    {{ form_gasto.valor(class="form-control", placeholder="Ex: 2500.50") }}
+                </div>
+                 <div class="form-group">
+                    {{ form_gasto.data.label(text="Data do Gasto") }}
+                    {{ form_gasto.data(class="form-control") }}
+                </div>
+                {{ form_gasto.submit(class="btn") }}
+            </form>
+        </div>
+
+        <hr style="margin: 2rem 0;">
+
+        <h4>Histórico de Gastos</h4>
+        <div class="gastos-list">
+        {% for gasto in gastos %}
+        <div class="gasto-item">
+            <div class="gasto-info">
+                <span class="gasto-data">{{ gasto.data.strftime('%d/%m/%Y') }}</span>
+                <span class="gasto-desc">{{ gasto.descricao }}</span>
+            </div>
+            <div class="gasto-actions">
+                <span class="gasto-valor">{{ gasto.valor | currency }}</span>
+                <form action="{{ url_for('remover_gasto', gasto_id=gasto.id) }}" method="POST" onsubmit="return confirm('Tem a certeza que deseja remover este gasto?');">
+                    <button type="submit" class="btn-remover" title="Remover Gasto">
+                        <svg xmlns="http://www.w.3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <p>Nenhum gasto registado para esta obra.</p>
+        {% endfor %}
+    </div>
+    </div>
+</div>
+{% endblock %}

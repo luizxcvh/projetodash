@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Lista de Obras{% endblock %}
+{% block header_title %}Obras{% endblock %}
+{% block header_subtitle %}Visualize, pesquise e filtre as obras em andamento.{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="content-header">
+        <h1>Obras Registadas</h1>
+        <a href="{{ url_for('adicionar_obra') }}" class="btn">Nova Obra</a>
+    </div>
+
+    <form method="GET" action="{{ url_for('listar_obras') }}" class="filter-form">
+        <div class="form-group">
+            <label for="q">Pesquisar por Nome ou Contrato</label>
+            <input type="text" id="q" name="q" class="form-control" placeholder="Digite aqui..." value="{{ request.args.get('q', '') }}">
+        </div>
+        <div class="form-group">
+            <label for="secretaria_id">Filtrar por Secretaria</label>
+            <select id="secretaria_id" name="secretaria_id" class="form-control">
+                <option value="">Todas as Secretarias</option>
+                {% for sec in todas_secretarias %}
+                    <option value="{{ sec.id }}" {% if request.args.get('secretaria_id') == sec.id|string %}selected{% endif %}>
+                        {{ sec.nome }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="ordenar_por">Ordenar por Gastos</label>
+            <select id="ordenar_por" name="ordenar_por" class="form-control">
+                <option value="" {% if not request.args.get('ordenar_por') %}selected{% endif %}>Padrão (Nome)</option>
+                <option value="maior_gasto" {% if request.args.get('ordenar_por') == 'maior_gasto' %}selected{% endif %}>Maior Gasto</option>
+                <option value="menor_gasto" {% if request.args.get('ordenar_por') == 'menor_gasto' %}selected{% endif %}>Menor Gasto</option>
+            </select>
+        </div>
+        <div class="filter-buttons">
+            <button type="submit" class="btn">Aplicar Filtros</button>
+            <a href="{{ url_for('listar_obras') }}" class="btn-secondary">Limpar</a>
+        </div>
+    </form>
+
+    <hr style="margin: 2rem 0;">
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome da Obra</th>
+                    <th>Secretaria</th>
+                    <th>Nº do Contrato</th>
+                    <th>Ordem de Serviço</th>
+                    <th>Total Gasto</th>
+                    <th>Saldo (Secretaria)</th>
+                    <th>Progresso</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for obra in obras %}
+                <tr>
+                    <td><strong>{{ obra.nome }}</strong><br><small class="text-secondary">{{ obra.municipio or '' }}</small></td>
+                    <td>{{ obra.secretaria.nome }}</td>
+                    <td>{{ obra.n_contrato or 'N/A' }}</td>
+                    <td>{{ obra.ordem_servico or 'N/A' }}</td>
+                    <td class="text-gasto">{{ obra.total_gasto | currency }}</td>
+                    <td class="{% if obra.secretaria.orcamento_restante >= 0 %}text-disponivel{% else %}text-prejuizo{% endif %}">
+                        {{ obra.secretaria.orcamento_restante | currency }}
+                    </td>
+                    <td>
+                        <div class="mini-chart-container">
+                            <canvas class="mini-chart" 
+                                    data-gasto="{{ obra.total_gasto }}" 
+                                    data-restante="{{ obra.secretaria.orcamento_restante }}">
+                            </canvas>
+                        </div>
+                    </td>
+                    <td>{{ obra.andamento.status }}</td>
+                    <td>
+                        <div class="actions-group">
+                            <a href="{{ url_for('detalhes_obra', obra_id=obra.id) }}" class="btn btn-sm">Gerir Gastos</a>
+                            <a href="{{ url_for('editar_obra', obra_id=obra.id) }}" class="btn btn-sm btn-editar">Editar</a>
+                            <form action="{{ url_for('remover_obra', obra_id=obra.id) }}" method="POST" onsubmit="return confirm('Tem a certeza que deseja remover esta obra?');">
+                                <button type="submit" class="btn btn-sm btn-remover-perigo">Remover</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="9">
+                        <p style="text-align: center; padding: 2rem;">Nenhuma obra encontrada com os filtros atuais.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
